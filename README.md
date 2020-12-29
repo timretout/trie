@@ -1,0 +1,2 @@
+# trie
+Naive Golang trie
