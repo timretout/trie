@@ -1,6 +1,8 @@
 // Package trie is a naive trie data structure
 package trie
 
+const end rune = -1
+
 type Trie struct {
 	root *element
 }
@@ -30,7 +32,7 @@ Rune:
 		e.children = append(e.children, &c)
 		e = &c
 	}
-	term := element{v: rune(0)}
+	term := element{v: end}
 	e.children = append(e.children, &term)
 }
 
@@ -47,7 +49,7 @@ Rune:
 		return false
 	}
 	for _, c := range e.children {
-		if c.v == rune(0) {
+		if c.v == end {
 			return true
 		}
 	}
