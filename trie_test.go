@@ -49,7 +49,17 @@ func TestInsert(t *testing.T) {
 	if !tr.Exists("cats") {
 		t.Errorf("cats should be in trie")
 	}
+}
 
+func TestDupeInsert(t *testing.T) {
+	tr := New()
+
+	tr.Insert("cat")
+	tr.Insert("cat")
+
+	if !tr.Exists("cat") {
+		t.Errorf("cat should be in trie")
+	}
 }
 
 func TestInsertEmptyString(t *testing.T) {
@@ -64,7 +74,6 @@ func TestInsertEmptyString(t *testing.T) {
 	if !tr.Exists("") {
 		t.Errorf("empty string should be in trie")
 	}
-
 }
 
 func TestInsertZeroRune(t *testing.T) {
@@ -78,36 +87,5 @@ func TestInsertZeroRune(t *testing.T) {
 
 	if !tr.Exists("\x00") {
 		t.Errorf("zero rune should be in trie")
-	}
-
-}
-
-// BenchmarkTrie-8     	  669060	      1609 ns/op	    1120 B/op	      35 allocs/op
-// BenchmarkExists-8   	100000000	        10.7 ns/op	       0 B/op	       0 allocs/op
-
-func BenchmarkTrie(b *testing.B) {
-	for n := 0; n < b.N; n++ {
-		tr := New()
-
-		for _, v := range []string{
-			"cat", "cats", "dog", "dogs", "caterpillar", "catenary", "catastrophe",
-		} {
-			tr.Insert(v)
-		}
-		tr.Exists("cats")
-	}
-}
-
-func BenchmarkExists(b *testing.B) {
-	tr := New()
-
-	for _, v := range []string{
-		"cat", "cats", "dog", "dogs", "caterpillar", "catenary", "catastrophe",
-	} {
-		tr.Insert(v)
-	}
-
-	for n := 0; n < b.N; n++ {
-		tr.Exists("cats")
 	}
 }

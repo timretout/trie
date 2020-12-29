@@ -35,6 +35,11 @@ Rune:
 		}
 		e = e.children
 	}
+	for c := e.children; c != nil; c = c.next {
+		if c.v == end {
+			return
+		}
+	}
 	e.children = &element{
 		next: e.children,
 		v:    end,
