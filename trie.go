@@ -8,7 +8,8 @@ type Trie struct {
 }
 
 type element struct {
-	children []*element
+	next     *element
+	children *element
 	v        rune
 }
 
@@ -22,25 +23,29 @@ func (tr *Trie) Insert(s string) {
 	e := tr.root
 Rune:
 	for _, r := range s {
-		for _, c := range e.children {
+		for c := e.children; c != nil; c = c.next {
 			if c.v == r {
 				e = c
 				continue Rune
 			}
 		}
-		c := element{v: r}
-		e.children = append(e.children, &c)
-		e = &c
+		e.children = &element{
+			next: e.children,
+			v:    r,
+		}
+		e = e.children
 	}
-	term := element{v: end}
-	e.children = append(e.children, &term)
+	e.children = &element{
+		next: e.children,
+		v:    end,
+	}
 }
 
 func (tr *Trie) Exists(s string) bool {
 	e := tr.root
 Rune:
 	for _, r := range s {
-		for _, c := range e.children {
+		for c := e.children; c != nil; c = c.next {
 			if c.v == r {
 				e = c
 				continue Rune
@@ -48,7 +53,7 @@ Rune:
 		}
 		return false
 	}
-	for _, c := range e.children {
+	for c := e.children; c != nil; c = c.next {
 		if c.v == end {
 			return true
 		}
