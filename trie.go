@@ -1,67 +1,53 @@
 // Package trie is a naive trie data structure
 package trie
 
-const end rune = -1
-
 type Trie struct {
-	root *element
-}
-
-type element struct {
-	next     *element
-	children *element
-	v        rune
+	next     *Trie // 8 bytes (on 64-bit systems)
+	children *Trie // 8 bytes
+	key      rune  // 4 bytes
+	// value is non-zero if the current node ends a key. This space would just
+	// be used for padding anyway.
+	value uint32 // 4 bytes
 }
 
 func New() *Trie {
-	return &Trie{
-		root: &element{},
-	}
+	return &Trie{}
 }
 
-func (tr *Trie) Insert(s string) {
-	e := tr.root
+func (tr *Trie) Insert(key string, value uint32) {
+	e := tr
 Rune:
-	for _, r := range s {
+	for _, r := range key {
 		for c := e.children; c != nil; c = c.next {
-			if c.v == r {
+			if c.key == r {
 				e = c
 				continue Rune
 			}
 		}
-		e.children = &element{
+		e.children = &Trie{
 			next: e.children,
-			v:    r,
+			key:  r,
 		}
 		e = e.children
 	}
-	for c := e.children; c != nil; c = c.next {
-		if c.v == end {
-			return
-		}
-	}
-	e.children = &element{
-		next: e.children,
-		v:    end,
-	}
+	e.value = value
 }
 
-func (tr *Trie) Exists(s string) bool {
-	e := tr.root
+func (tr *Trie) Exists(key string) bool {
+	return tr.Get(key) != 0
+}
+
+func (tr *Trie) Get(key string) uint32 {
+	e := tr
 Rune:
-	for _, r := range s {
+	for _, r := range key {
 		for c := e.children; c != nil; c = c.next {
-			if c.v == r {
+			if c.key == r {
 				e = c
 				continue Rune
 			}
 		}
-		return false
+		return 0
 	}
-	for c := e.children; c != nil; c = c.next {
-		if c.v == end {
-			return true
-		}
-	}
-	return false
+	return e.value
 }
