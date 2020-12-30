@@ -7,14 +7,14 @@ type Trie struct {
 	key      rune  // 4 bytes
 	// value is non-zero if the current node ends a key. This space would just
 	// be used for padding anyway.
-	value uint32 // 4 bytes
+	value int // 8 bytes
 }
 
 func New() *Trie {
 	return &Trie{}
 }
 
-func (tr *Trie) Insert(key string, value uint32) {
+func (tr *Trie) Insert(key string, value int) {
 	e := tr
 Rune:
 	for _, r := range key {
@@ -37,7 +37,7 @@ func (tr *Trie) Exists(key string) bool {
 	return tr.Get(key) != 0
 }
 
-func (tr *Trie) Get(key string) uint32 {
+func (tr *Trie) Get(key string) int {
 	e := tr
 Rune:
 	for _, r := range key {

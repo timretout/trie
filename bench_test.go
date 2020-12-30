@@ -31,7 +31,7 @@ func BenchmarkTrieMemory(b *testing.B) {
 		tr := New()
 
 		for i, v := range data {
-			tr.Insert(v, uint32(i))
+			tr.Insert(v, i)
 		}
 	}
 }
@@ -44,7 +44,7 @@ func BenchmarkInsert(b *testing.B) {
 	b.ResetTimer()
 
 	for n := 0; n < b.N; n++ {
-		tr.Insert(data[n%len(data)], uint32(n))
+		tr.Insert(data[n%len(data)], n)
 	}
 
 }
@@ -55,7 +55,7 @@ func BenchmarkExists(b *testing.B) {
 	tr := New()
 
 	for i, v := range data {
-		tr.Insert(v, uint32(i))
+		tr.Insert(v, i)
 	}
 
 	b.ResetTimer()
